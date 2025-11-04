@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+  api:
+    build: ./backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/rbacdb
+      - JWT_ACCESS_SECRET=verysecretaccess
+      - JWT_REFRESH_SECRET=verysecretrefresh
+      - NODE_ENV=development
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/app
+volumes:
+  mongo-data:
